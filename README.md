@@ -19,6 +19,9 @@ This modules allows developers to test spryker modules isolated.
       enabled:
         - ...
         - \FondOfCodeception\Module\Spryker
+      config:
+        \FondOfCodeception\Module\Spryker:
+            generate_transfer: true|false # Default is true
     ...
     ```
 

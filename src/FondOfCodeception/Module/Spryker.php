@@ -12,6 +12,11 @@ use Spryker\Shared\Config\Environment;
 class Spryker extends Module
 {
     /**
+     * @var array
+     */
+    protected $config = ['generate_transfer' => true];
+
+    /**
      * @var \FondOfCodeception\Lib\TransferFacadeFactory
      */
     protected $transferFacadeFactory;
@@ -39,14 +44,18 @@ class Spryker extends Module
     public function _initialize()
     {
         parent::_initialize();
+
         $this->initEnvironment();
-        $this->generateTransferClasses();
+
+        if ($this->config['generate_transfer']) {
+            $this->generateTransfer();
+        }
     }
 
     /**
      * @return void
      */
-    protected function generateTransferClasses(): void
+    protected function generateTransfer(): void
     {
         $transferFacade = $this->transferFacadeFactory->create();
         $nullLogger = $this->nullLoggerFactory->create();

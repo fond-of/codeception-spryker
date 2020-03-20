@@ -54,6 +54,12 @@ class TransferFacadeFactory
     {
         $container = new Container();
 
+        if(!defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FINDER') ||
+            !defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FILE_SYSTEM'))
+        {
+            return $container;
+        }
+
         if (!method_exists($container, 'set')) {
             $container[TransferDependencyProvider::SYMFONY_FINDER] = new Finder();
             $container[TransferDependencyProvider::SYMFONY_FILE_SYSTEM] = new Filesystem();

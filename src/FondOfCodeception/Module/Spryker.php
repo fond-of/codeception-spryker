@@ -14,7 +14,9 @@ class Spryker extends Module
     /**
      * @var array
      */
-    protected $config = ['generate_transfer' => true];
+    protected $config = [
+        'generate_transfer' => true
+    ];
 
     /**
      * @var \FondOfCodeception\Lib\TransferFacadeFactory
@@ -61,7 +63,12 @@ class Spryker extends Module
         $nullLogger = $this->nullLoggerFactory->create();
 
         $this->debug('Deleting existing transfer classes...');
-        $transferFacade->deleteGeneratedTransferObjects();
+        if (!method_exists($transferFacade, 'deleteGeneratedDataTransferObjects')) {
+            $transferFacade->deleteGeneratedTransferObjects();
+        } else {
+            $transferFacade->deleteGeneratedDataTransferObjects();
+        }
+
         $this->debug('Generating transfer classes...');
         $transferFacade->generateTransferObjects($nullLogger);
     }

@@ -80,7 +80,7 @@ class TransferFacadeFactory
     }
 
     /**
-     * @return \FondOfCodeception\Lib\TransferToUtilGlobServiceInterface
+     * @return \Spryker\Zed\Transfer\Dependency\Service\TransferToUtilGlobServiceInterface
      */
     protected function createTransferToUtilGlobServiceBridge(): TransferToUtilGlobServiceInterface
     {
@@ -109,6 +109,19 @@ class TransferFacadeFactory
      */
     protected function createTransferConfig(): TransferConfig
     {
-        return new TransferConfig();
+        return new class extends TransferConfig {
+            /**
+             * @return string[]
+             */
+            public function getSourceDirectories(): array
+            {
+                $sourceDirectories = parent::getSourceDirectories();
+
+                $sourceDirectories[] = rtrim(APPLICATION_ROOT_DIR, DIRECTORY_SEPARATOR) . '/*/src/*/Shared/*/Transfer/';
+                $sourceDirectories[] = rtrim(APPLICATION_ROOT_DIR, DIRECTORY_SEPARATOR) . '/*/*/src/*/Shared/*/Transfer/';
+                
+                return $sourceDirectories;
+            }
+        };
     }
 }

@@ -41,12 +41,12 @@ class SprykerTest extends Unit
 
         $rootDirectory = rtrim(codecept_root_dir(), DIRECTORY_SEPARATOR);
 
-        $this->assertDirectoryExists(codecept_root_dir('src/Generated/Shared/Transfer'));
-        $this->assertEquals('ZED', APPLICATION);
-        $this->assertEquals(Environment::TESTING, APPLICATION_ENV);
-        $this->assertEquals('UNIT', APPLICATION_STORE);
-        $this->assertEquals($rootDirectory, APPLICATION_ROOT_DIR);
-        $this->assertEquals($rootDirectory . DIRECTORY_SEPARATOR . 'src', APPLICATION_SOURCE_DIR);
-        $this->assertEquals($rootDirectory . DIRECTORY_SEPARATOR . 'vendor', APPLICATION_VENDOR_DIR);
+        static::assertDirectoryExists(codecept_root_dir('src/Generated/Shared/Transfer'));
+        static::assertEquals('ZED', APPLICATION);
+        static::assertEquals(Environment::TESTING, APPLICATION_ENV);
+        static::assertEquals('UNIT', APPLICATION_STORE);
+        static::assertEquals($rootDirectory, APPLICATION_ROOT_DIR);
+        static::assertEquals($rootDirectory . DIRECTORY_SEPARATOR . 'src', APPLICATION_SOURCE_DIR);
+        static::assertEquals($rootDirectory . DIRECTORY_SEPARATOR . 'vendor', APPLICATION_VENDOR_DIR);
     }
 }

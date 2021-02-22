@@ -29,6 +29,6 @@ class TransferFacadeFactoryTest extends Unit
     {
         $transferFacade = $this->transferFacadeFactory->create();
 
-        $this->assertInstanceOf(TransferFacade::class, $transferFacade);
+        static::assertInstanceOf(TransferFacade::class, $transferFacade);
     }
 }

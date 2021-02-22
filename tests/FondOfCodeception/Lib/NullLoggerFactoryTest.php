@@ -29,6 +29,6 @@ class NullLoggerFactoryTest extends Unit
     {
         $nullLogger = $this->nullLoggerFactory->create();
 
-        $this->assertInstanceOf(NullLogger::class, $nullLogger);
+        static::assertInstanceOf(NullLogger::class, $nullLogger);
     }
 }

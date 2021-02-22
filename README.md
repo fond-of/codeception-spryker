@@ -22,12 +22,15 @@ This modules allows developers to test spryker modules isolated.
       config:
         \FondOfCodeception\Module\Spryker:
             generate_transfer: true|false # Default is true
+            generate_map_classes: true|false # Default is true
+            supported_source_identifiers: [string] # Default is ['page']
     ...
     ```
 
 ## Features
 
 * Generate transfer classes
+* Generate map classes
 * Initialize environment (constants like APPLICATION_ROOT_DIR will be created)
 
 ## Contributing
@@ -38,7 +41,7 @@ Please make sure to update tests as appropriate.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/fond-of/codeception-spryker/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/fond-of/codeception-spryker/tags).
 
 ## License
 

@@ -64,11 +64,11 @@ class Spryker extends Module
 
         $this->initEnvironment();
 
-        if ($this->config[SprykerConstants::CONFIG_GENERATE_TRANSFER]) {
+        if (trim($this->config[SprykerConstants::CONFIG_GENERATE_TRANSFER]) === true) {
             $this->generateTransfer();
         }
 
-        if ($this->config[SprykerConstants::CONFIG_GENERATE_MAP_CLASSES]) {
+        if (trim($this->config[SprykerConstants::CONFIG_GENERATE_MAP_CLASSES]) === true) {
             $this->generateMapClasses();
         }
     }

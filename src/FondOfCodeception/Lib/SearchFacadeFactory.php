@@ -4,11 +4,18 @@ namespace FondOfCodeception\Lib;
 
 use FondOfCodeception\Module\SprykerConstants;
 use Generated\Shared\Transfer\StoreTransfer;
+use ReflectionClass;
+use Spryker\Client\Store\StoreClient;
+use Spryker\Client\Store\StoreFactory;
 use Spryker\Service\UtilEncoding\UtilEncodingService;
 use Spryker\Service\UtilEncoding\UtilEncodingServiceFactory;
-use Spryker\Shared\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceBridge;
-use Spryker\Shared\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceInterface;
+use Spryker\Service\UtilEncoding\UtilEncodingServiceInterface;
+use Spryker\Shared\SearchElasticsearch\Dependency\Client\SearchElasticsearchToStoreClientBridge;
+use Spryker\Shared\SearchElasticsearch\Dependency\Client\SearchElasticsearchToStoreClientInterface;
+use Spryker\Shared\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceBridge as SharedSearchElasticsearchToUtilEncodingServiceBridge;
+use Spryker\Shared\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceInterface as SharedSearchElasticsearchToUtilEncodingServiceInterface;
 use Spryker\Shared\SearchElasticsearch\SearchElasticsearchConfig as SharedSearchElasticsearchConfig;
+use Spryker\Shared\Store\Reader\StoreReaderInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Kernel\Business\AbstractFacade;
 use Spryker\Zed\Kernel\Container;
@@ -25,6 +32,8 @@ use Spryker\Zed\Search\SearchDependencyProvider;
 use Spryker\Zed\SearchElasticsearch\Business\SearchElasticsearchBusinessFactory;
 use Spryker\Zed\SearchElasticsearch\Business\SearchElasticsearchFacade;
 use Spryker\Zed\SearchElasticsearch\Communication\Plugin\Search\ElasticsearchIndexMapInstallerPlugin;
+use Spryker\Zed\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceBridge as ZedSearchElasticsearchToUtilEncodingServiceBridge;
+use Spryker\Zed\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceInterface as ZedSearchElasticsearchToUtilEncodingServiceInterface;
 use Spryker\Zed\SearchElasticsearch\SearchElasticsearchConfig;
 use Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider;
 use Spryker\Zed\Store\Business\StoreFacade;
@@ -62,7 +71,7 @@ class SearchFacadeFactory
     protected function createSearchBusinessFactory(): AbstractBusinessFactory
     {
         $searchBusinessFactory = new SearchBusinessFactory();
-        $reflectionClass = new \ReflectionClass(JsonIndexDefinitionLoader::class);
+        $reflectionClass = new ReflectionClass(JsonIndexDefinitionLoader::class);
 
         if ($reflectionClass->getConstructor()->getNumberOfRequiredParameters() === 4) {
             $searchBusinessFactory = new class extends SearchBusinessFactory {
@@ -76,11 +85,10 @@ class SearchFacadeFactory
                         $this->createJsonIndexDefinitionMerger(),
                         $this->getUtilEncodingService(),
                         [
-                            SprykerConstants::STORE
+                            SprykerConstants::STORE,
                         ]
                     );
                 }
-
             };
         }
 
@@ -99,8 +107,6 @@ class SearchFacadeFactory
     }
 
     /**
-     * @throws
-     *
      * @return \Spryker\Zed\Kernel\Container
      */
     protected function createSearchContainer(): Container
@@ -166,7 +172,7 @@ class SearchFacadeFactory
             public function getAllStores()
             {
                 return [
-                    $this->getCurrentStore()
+                    $this->getCurrentStore(),
                 ];
             }
         };
@@ -184,7 +190,7 @@ class SearchFacadeFactory
         $elasticsearchIndexMapInstallerPlugin->setFacade($this->createElasticsearchFacade());
 
         return [
-            $elasticsearchIndexMapInstallerPlugin
+            $elasticsearchIndexMapInstallerPlugin,
         ];
     }
 
@@ -238,7 +244,6 @@ class SearchFacadeFactory
 
                 return $directories;
             }
-
         };
 
         $searchElasticsearchConfig->setSharedConfig($this->createSharedSearchElasticsearchConfig());
@@ -255,7 +260,7 @@ class SearchFacadeFactory
             return new SharedSearchElasticsearchConfig();
         }
 
-        return new class($this->config[SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS]) extends SharedSearchElasticsearchConfig {
+        return new class ($this->config[SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS]) extends SharedSearchElasticsearchConfig {
             /**
              * @var string[]
              */
@@ -281,19 +286,39 @@ class SearchFacadeFactory
 
     /**
      * @return \Spryker\Zed\Kernel\Container
-     * @throws \Spryker\Service\Container\Exception\FrozenServiceException
      */
     protected function createSearchElasticsearchContainer(): Container
     {
         $container = new Container();
 
+        $requiredClassName = '\Spryker\Shared\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceBridge';
+        $createUtilEncodingMethod = 'createSharedSearchElasticsearchToUtilEncodingServiceBridge';
+
+        if (!class_exists($requiredClassName)) {
+            $createUtilEncodingMethod = 'createZedSearchElasticsearchToUtilEncodingServiceBridge';
+        }
+
         if (!method_exists($container, 'set')) {
-            $container[SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING] = $this->createSearchElasticsearchToUtilEncodingBridge();
+            if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::CLIENT_STORE')) {
+                $container[SearchElasticsearchDependencyProvider::CLIENT_STORE] = $this->createSearchElasticsearchToStoreClientBridge();
+            }
+
+            $container[SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING] = $this->{$createUtilEncodingMethod}();
 
             return $container;
         }
 
-        $container->set(SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING, $this->createSearchElasticsearchToUtilEncodingBridge());
+        $container->set(
+            SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING,
+            $this->{$createUtilEncodingMethod}()
+        );
+
+        if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::CLIENT_STORE')) {
+            $container->set(
+                SearchElasticsearchDependencyProvider::CLIENT_STORE,
+                $this->createSearchElasticsearchToStoreClientBridge()
+            );
+        }
 
         return $container;
     }
@@ -301,13 +326,101 @@ class SearchFacadeFactory
     /**
      * @return \Spryker\Shared\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceInterface
      */
-    protected function createSearchElasticsearchToUtilEncodingBridge(): SearchElasticsearchToUtilEncodingServiceInterface
+    protected function createSharedSearchElasticsearchToUtilEncodingServiceBridge(): SharedSearchElasticsearchToUtilEncodingServiceInterface
     {
         $utilEncodingServiceFactory = new UtilEncodingServiceFactory();
 
-        return new SearchElasticsearchToUtilEncodingServiceBridge(
-            (new UtilEncodingService())
-                ->setFactory($utilEncodingServiceFactory)
+        return new SharedSearchElasticsearchToUtilEncodingServiceBridge(
+            $this->createUtilEncodingService()
         );
+    }
+
+    /**
+     * @return \Spryker\Zed\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceInterface
+     */
+    protected function createZedSearchElasticsearchToUtilEncodingServiceBridge(): ZedSearchElasticsearchToUtilEncodingServiceInterface
+    {
+        $utilEncodingServiceFactory = new UtilEncodingServiceFactory();
+
+        return new ZedSearchElasticsearchToUtilEncodingServiceBridge(
+            $this->createUtilEncodingService()
+        );
+    }
+
+    /**
+     * @return \Spryker\Service\UtilEncoding\UtilEncodingServiceInterface
+     */
+    protected function createUtilEncodingService(): UtilEncodingServiceInterface
+    {
+        $utilEncodingServiceFactory = new UtilEncodingServiceFactory();
+
+        return (new UtilEncodingService())
+            ->setFactory($utilEncodingServiceFactory);
+    }
+
+    /**
+     * @return \Spryker\Shared\SearchElasticsearch\Dependency\Client\SearchElasticsearchToStoreClientInterface
+     */
+    protected function createSearchElasticsearchToStoreClientBridge(): SearchElasticsearchToStoreClientInterface
+    {
+        $storeClient = (new StoreClient())
+            ->setFactory($this->createStoreFactory());
+
+        return new SearchElasticsearchToStoreClientBridge(
+            $storeClient
+        );
+    }
+
+    /**
+     * @return \Spryker\Client\Store\StoreFactory
+     */
+    protected function createStoreFactory(): StoreFactory
+    {
+        $storeReader = new class implements StoreReaderInterface {
+            /**
+             * @return \Generated\Shared\Transfer\StoreTransfer
+             */
+            public function getCurrentStore()
+            {
+                return $this->getStoreByName(SprykerConstants::STORE);
+            }
+
+            /**
+             * @param $storeName
+             *
+             * @return mixed
+             */
+            public function getStoreByName($storeName)
+            {
+                return (new StoreTransfer())
+                    ->setName($storeName);
+            }
+        };
+
+        $storeFactory = new class ($storeReader) extends StoreFactory {
+
+            /**
+             * @var \Spryker\Shared\Store\Reader\StoreReaderInterface
+             */
+            protected $storeReader;
+
+            /**
+             * @param \Spryker\Shared\Store\Reader\StoreReaderInterface $storeReader
+             */
+            public function __construct(StoreReaderInterface $storeReader)
+            {
+                $this->storeReader = $storeReader;
+            }
+
+            /**
+             * @return \Spryker\Shared\Store\Reader\StoreReaderInterface
+             */
+            public function createStoreReader()
+            {
+                return $this->storeReader;
+            }
+        };
+
+        return $storeFactory;
     }
 }

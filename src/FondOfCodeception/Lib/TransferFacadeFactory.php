@@ -46,17 +46,16 @@ class TransferFacadeFactory
     }
 
     /**
-     * @throws
-     *
      * @return \Spryker\Zed\Kernel\Container
      */
     protected function createContainer(): Container
     {
         $container = new Container();
 
-        if(!defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FINDER') ||
-            !defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FILE_SYSTEM'))
-        {
+        if (
+            !defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FINDER') ||
+            !defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FILE_SYSTEM')
+        ) {
             return $container;
         }
 
@@ -84,7 +83,7 @@ class TransferFacadeFactory
      */
     protected function createTransferToUtilGlobServiceBridge(): TransferToUtilGlobServiceInterface
     {
-        return  new TransferToUtilGlobServiceBridge($this->createUtilGlobService());
+        return new TransferToUtilGlobServiceBridge($this->createUtilGlobService());
     }
 
     /**
@@ -119,7 +118,7 @@ class TransferFacadeFactory
 
                 $sourceDirectories[] = rtrim(APPLICATION_ROOT_DIR, DIRECTORY_SEPARATOR) . '/*/src/*/Shared/*/Transfer/';
                 $sourceDirectories[] = rtrim(APPLICATION_ROOT_DIR, DIRECTORY_SEPARATOR) . '/*/*/src/*/Shared/*/Transfer/';
-                
+
                 return $sourceDirectories;
             }
         };

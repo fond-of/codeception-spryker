@@ -19,7 +19,7 @@ class Spryker extends Module
     protected $config = [
         SprykerConstants::CONFIG_GENERATE_TRANSFER => true,
         SprykerConstants::CONFIG_GENERATE_MAP_CLASSES => true,
-        SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page']
+        SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page'],
     ];
 
     /**

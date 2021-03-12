@@ -9,8 +9,8 @@ propel:
         settings:
           charset: utf8
   paths:
-    schemaDir: "./src/Orm/Propel/Schema"
-    phpDir: "./src/Generated/"
+    schemaDir: "./src/Orm/Propel/Schema/"
+    phpDir: "./src/"
   runtime:
     defaultConnection: zed
     connections:

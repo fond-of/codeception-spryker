@@ -1,5 +1,5 @@
 # Spryker Codeception Module
-[![Build Status](https://travis-ci.org/fond-of-codeception/spryker.svg?branch=master)](https://travis-ci.org/fond-of-codeception/spryker)
+[![CI](https://github.com/fond-of/codeception-spryker/actions/workflows/main.yml/badge.svg)](https://github.com/fond-of/codeception-spryker/actions/workflows/main.yml)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/fond-of-codeception/spryker.svg)](https://php.net/)
 [![Packagist](https://img.shields.io/packagist/l/fond-of-codeception/spryker.svg)](https://packagist.org/packages/fond-of-codeception/spryker)
 

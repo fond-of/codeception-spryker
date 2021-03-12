@@ -19,7 +19,7 @@
     "spryker/transfer": "^3.1.1"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.4"
+    "spryker/code-sniffer": "*"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

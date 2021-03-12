@@ -3,7 +3,7 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/fond-of-codeception/spryker.svg)](https://php.net/)
 [![Packagist](https://img.shields.io/packagist/l/fond-of-codeception/spryker.svg)](https://packagist.org/packages/fond-of-codeception/spryker)
 
-This modules allows developers to test spryker modules isolated.
+This module allows developers to test spryker modules isolated.
 
 ## Installation
 

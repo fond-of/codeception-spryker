@@ -9,7 +9,7 @@ This modules allows developers to test spryker modules isolated.
 
 1. Add the package to `composer.json`:
     ```
-    composer require fond-of-codeception/spryker
+    composer require --dev fond-of-codeception/spryker
     ```
 
 2. Enable module in `codeception.yml`:
@@ -23,13 +23,15 @@ This modules allows developers to test spryker modules isolated.
         \FondOfCodeception\Module\Spryker:
             generate_transfer: true|false # Default is true
             generate_map_classes: true|false # Default is true
+            generate_propel_classes: true|false # Default is true
             supported_source_identifiers: [string] # Default is ['page']
     ...
     ```
 
 ## Features
 
-* Generate transfer classes
+* Generate (entity)transfer classes
+* Generate propel classes
 * Generate map classes
 * Initialize environment (constants like APPLICATION_ROOT_DIR will be created)
 

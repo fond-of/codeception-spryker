@@ -2,15 +2,19 @@
 
 namespace FondOfCodeception\Lib;
 
-use Spryker\Service\Kernel\AbstractServiceFactory;
+use FondOfCodeception\Module\SprykerConstants;
 use Spryker\Service\UtilGlob\UtilGlobService;
 use Spryker\Service\UtilGlob\UtilGlobServiceFactory;
 use Spryker\Service\UtilGlob\UtilGlobServiceInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Kernel\Container;
+use Spryker\Zed\Propel\Business\PropelFacade;
+use Spryker\Zed\Propel\Business\PropelFacadeInterface;
 use Spryker\Zed\Transfer\Business\TransferBusinessFactory;
 use Spryker\Zed\Transfer\Business\TransferFacade;
 use Spryker\Zed\Transfer\Business\TransferFacadeInterface;
+use Spryker\Zed\Transfer\Dependency\Facade\TransferToPropelFacadeBridge;
+use Spryker\Zed\Transfer\Dependency\Facade\TransferToPropelFacadeInterface;
 use Spryker\Zed\Transfer\Dependency\Service\TransferToUtilGlobServiceBridge;
 use Spryker\Zed\Transfer\Dependency\Service\TransferToUtilGlobServiceInterface;
 use Spryker\Zed\Transfer\TransferConfig;
@@ -52,28 +56,98 @@ class TransferFacadeFactory
     {
         $container = new Container();
 
-        if (
-            !defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FINDER') ||
-            !defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FILE_SYSTEM')
-        ) {
+        $container = $this->addSymfonyFinderToContainer($container);
+        $container = $this->addSymfonyFilesystemToContainer($container);
+        $container = $this->addPropelFacadeToContainer($container);
+        $container = $this->addUtilGlobServiceToContainer($container);
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addSymfonyFinderToContainer(Container $container): Container
+    {
+        if (!defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FINDER')) {
             return $container;
         }
 
         if (!method_exists($container, 'set')) {
             $container[TransferDependencyProvider::SYMFONY_FINDER] = new Finder();
-            $container[TransferDependencyProvider::SYMFONY_FILE_SYSTEM] = new Filesystem();
 
             return $container;
         }
 
         $container->set(TransferDependencyProvider::SYMFONY_FINDER, new Finder());
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addSymfonyFilesystemToContainer(Container $container): Container
+    {
+        if (!defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SYMFONY_FILE_SYSTEM')) {
+            return $container;
+        }
+
+        if (!method_exists($container, 'set')) {
+            $container[TransferDependencyProvider::SYMFONY_FILE_SYSTEM] = new Filesystem();
+
+            return $container;
+        }
+
         $container->set(TransferDependencyProvider::SYMFONY_FILE_SYSTEM, new Filesystem());
 
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addUtilGlobServiceToContainer(Container $container): Container
+    {
         if (!defined('\Spryker\Zed\Transfer\TransferDependencyProvider::SERVICE_UTIL_GLOB')) {
             return $container;
         }
 
+        if (!method_exists($container, 'set')) {
+            $container[TransferDependencyProvider::SYMFONY_FINDER] = $this->createTransferToUtilGlobServiceBridge();
+
+            return $container;
+        }
+
         $container->set(TransferDependencyProvider::SERVICE_UTIL_GLOB, $this->createTransferToUtilGlobServiceBridge());
+
+        return $container;
+    }
+
+    /**
+     * @param \Spryker\Zed\Kernel\Container $container
+     *
+     * @return \Spryker\Zed\Kernel\Container
+     */
+    protected function addPropelFacadeToContainer(Container $container): Container
+    {
+        if (!defined('\Spryker\Zed\Transfer\TransferDependencyProvider::FACADE_PROPEL')) {
+            return $container;
+        }
+
+        if (!method_exists($container, 'set')) {
+            $container[TransferDependencyProvider::FACADE_PROPEL] = $this->createTransferToPropelFacadeBridge();
+
+            return $container;
+        }
+
+        $container->set(TransferDependencyProvider::FACADE_PROPEL, $this->createTransferToPropelFacadeBridge());
 
         return $container;
     }
@@ -92,15 +166,31 @@ class TransferFacadeFactory
     protected function createUtilGlobService(): UtilGlobServiceInterface
     {
         return (new UtilGlobService())
-            ->setFactory($this->createUtilGlobServiceFactory());
+            ->setFactory(new UtilGlobServiceFactory());
     }
 
     /**
-     * @return \Spryker\Service\Kernel\AbstractServiceFactory
+     * @return \Spryker\Zed\Transfer\Dependency\Facade\TransferToPropelFacadeInterface
      */
-    protected function createUtilGlobServiceFactory(): AbstractServiceFactory
+    protected function createTransferToPropelFacadeBridge(): TransferToPropelFacadeInterface
     {
-        return new UtilGlobServiceFactory();
+        return new TransferToPropelFacadeBridge($this->createPropelFacade());
+    }
+
+    /**
+     * @return \Spryker\Zed\Propel\Business\PropelFacadeInterface
+     */
+    protected function createPropelFacade(): PropelFacadeInterface
+    {
+        return new class extends PropelFacade {
+            /**
+             * @return string
+             */
+            public function getSchemaDirectory(): string
+            {
+                return SprykerConstants::SCHEMA_DIRECTORY;
+            }
+        };
     }
 
     /**

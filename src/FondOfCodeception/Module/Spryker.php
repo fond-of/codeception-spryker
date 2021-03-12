@@ -6,10 +6,12 @@ use Codeception\Configuration;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
 use FondOfCodeception\Lib\NullLoggerFactory;
+use FondOfCodeception\Lib\PropelFacadeFactory;
 use FondOfCodeception\Lib\SearchFacadeFactory;
 use FondOfCodeception\Lib\TransferFacadeFactory;
 use Psr\Log\LoggerInterface;
 use Spryker\Shared\Config\Environment;
+use Symfony\Component\Process\Process;
 
 class Spryker extends Module
 {
@@ -19,6 +21,7 @@ class Spryker extends Module
     protected $config = [
         SprykerConstants::CONFIG_GENERATE_TRANSFER => true,
         SprykerConstants::CONFIG_GENERATE_MAP_CLASSES => true,
+        SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES => true,
         SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page'],
     ];
 
@@ -38,6 +41,11 @@ class Spryker extends Module
     protected $transferFacadeFactory;
 
     /**
+     * @var \FondOfCodeception\Lib\PropelFacadeFactory
+     */
+    protected $propelFacadeFactory;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $nullLogger;
@@ -52,6 +60,7 @@ class Spryker extends Module
 
         $this->nullLoggerFactory = new NullLoggerFactory();
         $this->searchFacadeFactory = new SearchFacadeFactory($this->config);
+        $this->propelFacadeFactory = new PropelFacadeFactory();
         $this->transferFacadeFactory = new TransferFacadeFactory();
     }
 
@@ -63,6 +72,10 @@ class Spryker extends Module
         parent::_initialize();
 
         $this->initEnvironment();
+
+        if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES]) {
+            $this->generatePropelClasses();
+        }
 
         if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_TRANSFER]) {
             $this->generateTransfer();
@@ -76,16 +89,48 @@ class Spryker extends Module
     /**
      * @return void
      */
+    protected function generatePropelClasses(): void
+    {
+        $propelFacade = $this->propelFacadeFactory->create();
+
+        $this->debug('Deleting existing schema files...');
+        $propelFacade->cleanPropelSchemaDirectory();
+
+        $this->debug('Merging and coping schema files...');
+        $propelFacade->copySchemaFilesToTargetDirectory();
+
+        $this->debug('Generating popel classes...');
+        (new Process([
+            APPLICATION_VENDOR_DIR . '/bin/propel',
+            'model:build',
+            '--config-dir',
+            APPLICATION_VENDOR_DIR . '/fond-of-codeception/spryker/propel.yml',
+        ]))->run();
+    }
+
+    /**
+     * @return void
+     */
     protected function generateTransfer(): void
     {
         $transferFacade = $this->transferFacadeFactory->create();
         $nullLogger = $this->getNullLogger();
+
+        if (method_exists($transferFacade, 'deleteGeneratedEntityTransferObjects')) {
+            $this->debug('Deleting existing entity transfer classes...');
+            $transferFacade->deleteGeneratedEntityTransferObjects();
+        }
 
         $this->debug('Deleting existing transfer classes...');
         if (!method_exists($transferFacade, 'deleteGeneratedDataTransferObjects')) {
             $transferFacade->deleteGeneratedTransferObjects();
         } else {
             $transferFacade->deleteGeneratedDataTransferObjects();
+        }
+
+        if (method_exists($transferFacade, 'generateEntityTransferObjects')) {
+            $this->debug('Generating entity transfer classes...');
+            $transferFacade->generateEntityTransferObjects($nullLogger);
         }
 
         $this->debug('Generating transfer classes...');

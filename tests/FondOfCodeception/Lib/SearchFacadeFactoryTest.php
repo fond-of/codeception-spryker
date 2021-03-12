@@ -5,7 +5,6 @@ namespace FondOfCodeception\Lib;
 use Codeception\Test\Unit;
 use FondOfCodeception\Module\SprykerConstants;
 use Spryker\Zed\Search\Business\SearchFacade;
-use Spryker\Zed\Transfer\Business\TransferFacade;
 
 class SearchFacadeFactoryTest extends Unit
 {
@@ -23,7 +22,7 @@ class SearchFacadeFactoryTest extends Unit
 
         $this->searchFacadeFactory = new SearchFacadeFactory(
             [
-                SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page']
+                SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page'],
             ]
         );
     }

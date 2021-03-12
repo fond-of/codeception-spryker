@@ -1,21 +1,12 @@
 language: php
 
 php:
-  - 7.1
-  - 7.2
   - 7.3
   - 7.4
+  - 8.0
 
 env:
   COMPOSER_MEMORY_LIMIT=-1
-
-cache:
-  directories:
-    - ~/.cache/composer
-
-before_install:
-  - composer selfupdate
-  - composer global require hirak/prestissimo
 
 install:
   - composer install --no-interaction --prefer-dist

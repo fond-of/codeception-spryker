@@ -117,12 +117,15 @@ class PropelFacadeFactory
             public function getCorePropelSchemaPathPatterns(): array
             {
                 $corePropelSchemaPathPatterns = parent::getCorePropelSchemaPathPatterns();
+                $additionalCorePropelSchemaPathPattern = APPLICATION_ROOT_DIR . '/bundles/*/src/*/Zed/*/Persistence/Propel/Schema/';
 
-                $additionalCorePropelSchemaPathPatterns = [
-                    APPLICATION_ROOT_DIR . '/bundles/*/src/*/Zed/*/Persistence/Propel/Schema/',
-                ];
+                if (!glob($additionalCorePropelSchemaPathPattern)) {
+                    return $corePropelSchemaPathPatterns;
+                }
 
-                return array_merge($corePropelSchemaPathPatterns, $additionalCorePropelSchemaPathPatterns);
+                $corePropelSchemaPathPatterns[] = $additionalCorePropelSchemaPathPattern;
+
+                return $corePropelSchemaPathPatterns;
             }
 
             /**

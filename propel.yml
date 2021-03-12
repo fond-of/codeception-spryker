@@ -20,3 +20,6 @@ propel:
     recursive: true
     connections:
       - zed
+    objectModel:
+      builders:
+        query: \Spryker\Zed\PropelOrm\Business\Builder\QueryBuilder

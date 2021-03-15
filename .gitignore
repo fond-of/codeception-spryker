@@ -3,6 +3,7 @@
 .DS_Store
 
 src/Generated
+src/Orm
 
 vendor
 composer.lock

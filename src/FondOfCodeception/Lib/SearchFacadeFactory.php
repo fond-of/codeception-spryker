@@ -386,9 +386,9 @@ class SearchFacadeFactory
             }
 
             /**
-             * @param $storeName
+             * @param string $storeName
              *
-             * @return mixed
+             * @return \Generated\Shared\Transfer\StoreTransfer
              */
             public function getStoreByName($storeName)
             {

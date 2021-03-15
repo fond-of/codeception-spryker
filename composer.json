@@ -10,26 +10,30 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.3",
     "codeception/codeception": "^2.0.0 || ^3.0.0 || ^4.0.0",
-    "spryker/transfer": "^3.1.1",
+    "spryker/propel": "^3.20.0",
     "spryker/search": "^8.0.0",
-    "spryker/search-elasticsearch": "^1.0.0"
+    "spryker/search-elasticsearch": "^1.0.0",
+    "spryker/synchronization-behavior": "^1.0.0",
+    "spryker/transfer": "^3.1.1"
   },
   "require-dev": {
-    "squizlabs/php_codesniffer": "^3.4"
+    "spryker/code-sniffer": "*"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Generated\\": "src/Generated",
-      "FondOfCodeception\\": "src/FondOfCodeception"
+      "FondOfCodeception\\": "src/FondOfCodeception",
+      "Propel\\Generator\\Behavior\\Synchronization\\": "src/Propel/Generator/Behavior/Synchronization"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "FondOfCodeception\\": "tests/FondOfCodeception"
+      "FondOfCodeception\\": "tests/FondOfCodeception",
+      "Propel\\Generator\\Behavior\\Synchronization\\": "tests/Propel/Generator/Behavior/Synchronization"
     }
   }
 }

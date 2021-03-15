@@ -1,0 +1,25 @@
+propel:
+  database:
+    connections:
+      zed:
+        adapter: sqlite
+        dsn: "sqlite:memory:"
+        user:
+        password:
+        settings:
+          charset: utf8
+  paths:
+    schemaDir: "./src/Orm/Propel/Schema/"
+    phpDir: "./src/"
+  runtime:
+    defaultConnection: zed
+    connections:
+      - zed
+  generator:
+    defaultConnection: zed
+    recursive: true
+    connections:
+      - zed
+    objectModel:
+      builders:
+        query: \Spryker\Zed\PropelOrm\Business\Builder\QueryBuilder

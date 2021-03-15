@@ -1,15 +1,15 @@
 # Spryker Codeception Module
-[![Build Status](https://travis-ci.org/fond-of-codeception/spryker.svg?branch=master)](https://travis-ci.org/fond-of-codeception/spryker)
+[![CI](https://github.com/fond-of/codeception-spryker/actions/workflows/main.yml/badge.svg)](https://github.com/fond-of/codeception-spryker/actions/workflows/main.yml)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/fond-of-codeception/spryker.svg)](https://php.net/)
 [![Packagist](https://img.shields.io/packagist/l/fond-of-codeception/spryker.svg)](https://packagist.org/packages/fond-of-codeception/spryker)
 
-This modules allows developers to test spryker modules isolated.
+This module allows developers to test spryker modules isolated.
 
 ## Installation
 
 1. Add the package to `composer.json`:
     ```
-    composer require fond-of-codeception/spryker
+    composer require --dev fond-of-codeception/spryker
     ```
 
 2. Enable module in `codeception.yml`:
@@ -23,13 +23,15 @@ This modules allows developers to test spryker modules isolated.
         \FondOfCodeception\Module\Spryker:
             generate_transfer: true|false # Default is true
             generate_map_classes: true|false # Default is true
+            generate_propel_classes: true|false # Default is true
             supported_source_identifiers: [string] # Default is ['page']
     ...
     ```
 
 ## Features
 
-* Generate transfer classes
+* Generate (entity)transfer classes
+* Generate propel classes
 * Generate map classes
 * Initialize environment (constants like APPLICATION_ROOT_DIR will be created)
 

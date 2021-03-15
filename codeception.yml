@@ -12,6 +12,7 @@ coverage:
   enabled: true
   include:
     - src/FondOfCodeception/*.php
+    - src/Propel/*.php
 
 paths:
   tests: tests

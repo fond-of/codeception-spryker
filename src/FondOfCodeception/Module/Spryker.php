@@ -75,6 +75,7 @@ class Spryker extends Module
 
         if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES]) {
             $this->generatePropelClasses();
+            $this->loadDatabase();
         }
 
         if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_TRANSFER]) {
@@ -106,6 +107,18 @@ class Spryker extends Module
             '--config-dir',
             APPLICATION_VENDOR_DIR . '/fond-of-codeception/spryker/propel.yml',
         ]))->run();
+    }
+
+    /**
+     * @return void
+     */
+    protected function loadDatabase(): void
+    {
+        $propelDatabaseConfigurationFile = SprykerConstants::PROPEL_DATABSE_CONFIGURATION_FILE;
+
+        if (file_exists($propelDatabaseConfigurationFile)) {
+            require_once($propelDatabaseConfigurationFile);
+        }
     }
 
     /**

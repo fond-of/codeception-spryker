@@ -110,7 +110,7 @@ class Spryker extends Module
             APPLICATION_VENDOR_DIR . '/bin/propel',
             'model:build',
             '--config-dir',
-            $configFile
+            $configFile,
         ];
 
         $this->debug('Generating propel classes...');
@@ -124,7 +124,6 @@ class Spryker extends Module
         } catch (Exception $exception) {
             (new Process($modelBuildCommand))->mustRun();
         }
-
     }
 
     /**

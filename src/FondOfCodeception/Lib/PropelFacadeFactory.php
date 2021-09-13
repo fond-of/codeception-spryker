@@ -141,7 +141,7 @@ class PropelFacadeFactory
              */
             public function getSchemaDirectory()
             {
-                return SprykerConstants::SCHEMA_DIRECTORY;
+                return SprykerConstants::PROPEL_SCHEMA_DIRECTORY;
             }
         };
     }

@@ -6,8 +6,8 @@ interface SprykerConstants
 {
     public const STORE = 'UNIT';
 
-    public const SCHEMA_DIRECTORY = APPLICATION_SOURCE_DIR . '/Orm/Propel/Schema';
-    public const PROPEL_DATABSE_CONFIGURATION_FILE = APPLICATION_ROOT_DIR . '/generated-conf/loadDatabase.php';
+    public const PROPEL_SCHEMA_DIRECTORY = APPLICATION_SOURCE_DIR . '/Orm/Propel/Schema';
+    public const PROPEL_LOADER_SCRIPT_DIRECTORY = APPLICATION_SOURCE_DIR . '/Orm/Propel/generated-conf';
 
     public const CONFIG_GENERATE_TRANSFER = 'generate_transfer';
     public const CONFIG_GENERATE_MAP_CLASSES = 'generate_map_classes';

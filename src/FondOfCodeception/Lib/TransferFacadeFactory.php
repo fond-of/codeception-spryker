@@ -188,7 +188,7 @@ class TransferFacadeFactory
              */
             public function getSchemaDirectory(): string
             {
-                return SprykerConstants::SCHEMA_DIRECTORY;
+                return SprykerConstants::PROPEL_SCHEMA_DIRECTORY;
             }
         };
     }

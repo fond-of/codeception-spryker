@@ -5,6 +5,7 @@ namespace FondOfCodeception\Module;
 use Codeception\Configuration;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
+use Exception;
 use FondOfCodeception\Lib\NullLoggerFactory;
 use FondOfCodeception\Lib\PropelFacadeFactory;
 use FondOfCodeception\Lib\SearchFacadeFactory;
@@ -75,7 +76,6 @@ class Spryker extends Module
 
         if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES]) {
             $this->generatePropelClasses();
-            $this->loadDatabase();
         }
 
         if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_TRANSFER]) {
@@ -100,25 +100,31 @@ class Spryker extends Module
         $this->debug('Merging and coping schema files...');
         $propelFacade->copySchemaFilesToTargetDirectory();
 
-        $this->debug('Generating popel classes...');
-        (new Process([
+        $configFile = APPLICATION_VENDOR_DIR . '/fond-of-codeception/spryker/propel.yml';
+
+        if (!file_exists($configFile)) {
+            $configFile = APPLICATION_ROOT_DIR . '/propel.yml';
+        }
+
+        $modelBuildCommand = [
             APPLICATION_VENDOR_DIR . '/bin/propel',
             'model:build',
             '--config-dir',
-            APPLICATION_VENDOR_DIR . '/fond-of-codeception/spryker/propel.yml',
-        ]))->run();
-    }
+            $configFile
+        ];
 
-    /**
-     * @return void
-     */
-    protected function loadDatabase(): void
-    {
-        $propelDatabaseConfigurationFile = SprykerConstants::PROPEL_DATABSE_CONFIGURATION_FILE;
-
-        if (file_exists($propelDatabaseConfigurationFile)) {
-            require_once($propelDatabaseConfigurationFile);
+        $this->debug('Generating propel classes...');
+        try {
+            (new Process(
+                array_merge(
+                    $modelBuildCommand,
+                    ['--loader-script-dir', SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY]
+                )
+            ))->mustRun();
+        } catch (Exception $exception) {
+            (new Process($modelBuildCommand))->mustRun();
         }
+
     }
 
     /**

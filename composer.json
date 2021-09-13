@@ -26,6 +26,7 @@
   "autoload": {
     "psr-4": {
       "Generated\\": "src/Generated",
+      "Orm\\": "src/Orm",
       "FondOfCodeception\\": "src/FondOfCodeception",
       "Propel\\Generator\\Behavior\\Synchronization\\": "src/Propel/Generator/Behavior/Synchronization"
     }

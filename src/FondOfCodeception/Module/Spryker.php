@@ -106,24 +106,22 @@ class Spryker extends Module
             $configFile = APPLICATION_ROOT_DIR . '/propel.yml';
         }
 
-        $modelBuildCommand = [
-            APPLICATION_VENDOR_DIR . '/bin/propel',
-            'model:build',
-            '--config-dir',
-            $configFile,
-        ];
+        $modelBuildCommand = [APPLICATION_VENDOR_DIR . '/bin/propel', 'model:build', '--config-dir', $configFile];
+        $loaderScriptDirParams = ['--loader-script-dir', SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY];
 
         $this->debug('Generating propel classes...');
         try {
-            (new Process(
-                array_merge(
-                    $modelBuildCommand,
-                    ['--loader-script-dir', SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY]
-                )
-            ))->mustRun();
+            (new Process(array_merge($modelBuildCommand, $loaderScriptDirParams)))->mustRun();
         } catch (Exception $exception) {
             (new Process($modelBuildCommand))->mustRun();
         }
+
+        if (!file_exists(SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY)) {
+            return;
+        }
+
+        $this->debug('Load propel classes...');
+        require_once SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY;
     }
 
     /**

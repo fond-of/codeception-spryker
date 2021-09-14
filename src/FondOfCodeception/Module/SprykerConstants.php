@@ -8,6 +8,7 @@ interface SprykerConstants
 
     public const PROPEL_SCHEMA_DIRECTORY = APPLICATION_SOURCE_DIR . '/Orm/Propel/Schema';
     public const PROPEL_LOADER_SCRIPT_DIRECTORY = APPLICATION_SOURCE_DIR . '/Orm/Propel/generated-conf';
+    public const PROPEL_LOADER_SCRIPT = self::PROPEL_LOADER_SCRIPT_DIRECTORY . '/loadDatabase.php';
 
     public const CONFIG_GENERATE_TRANSFER = 'generate_transfer';
     public const CONFIG_GENERATE_MAP_CLASSES = 'generate_map_classes';

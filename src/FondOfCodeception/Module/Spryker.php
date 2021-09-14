@@ -116,12 +116,12 @@ class Spryker extends Module
             (new Process($modelBuildCommand))->mustRun();
         }
 
-        if (!file_exists(SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY)) {
+        if (!file_exists(SprykerConstants::PROPEL_LOADER_SCRIPT)) {
             return;
         }
 
         $this->debug('Load propel classes...');
-        require_once SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY;
+        require_once SprykerConstants::PROPEL_LOADER_SCRIPT;
     }
 
     /**

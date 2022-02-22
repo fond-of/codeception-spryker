@@ -200,7 +200,7 @@ class TransferFacadeFactory
     {
         return new class extends TransferConfig {
             /**
-             * @return string[]
+             * @return array<string>
              */
             public function getSourceDirectories(): array
             {

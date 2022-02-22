@@ -23,7 +23,7 @@ class SearchFacadeFactoryTest extends Unit
         $this->searchFacadeFactory = new SearchFacadeFactory(
             [
                 SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page'],
-            ]
+            ],
         );
     }
 

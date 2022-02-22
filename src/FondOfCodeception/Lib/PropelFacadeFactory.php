@@ -99,7 +99,7 @@ class PropelFacadeFactory
 
         $container->set(
             PropelDependencyProvider::PLUGINS_PROPEL_SCHEMA_ELEMENT_FILTER,
-            $this->createPropelSchemaElementFilterPlugins()
+            $this->createPropelSchemaElementFilterPlugins(),
         );
 
         return $container;
@@ -112,11 +112,17 @@ class PropelFacadeFactory
     {
         return new class extends PropelConfig {
             /**
-             * @return string[]
+             * @return array<string>
              */
             public function getCorePropelSchemaPathPatterns(): array
             {
                 $corePropelSchemaPathPatterns = parent::getCorePropelSchemaPathPatterns();
+                $additionalCorePropelSchemaPathPattern = APPLICATION_ROOT_DIR . '/src/*/Zed/*/Persistence/Propel/Schema/';
+
+                if (glob($additionalCorePropelSchemaPathPattern)) {
+                    $corePropelSchemaPathPatterns[] = $additionalCorePropelSchemaPathPattern;
+                }
+
                 $additionalCorePropelSchemaPathPattern = APPLICATION_ROOT_DIR . '/bundles/*/src/*/Zed/*/Persistence/Propel/Schema/';
 
                 if (!glob($additionalCorePropelSchemaPathPattern)) {
@@ -129,9 +135,9 @@ class PropelFacadeFactory
             }
 
             /**
-             * @return string[]
+             * @return array<string>
              */
-            public function getProjectPropelSchemaPathPatterns()
+            public function getProjectPropelSchemaPathPatterns(): array
             {
                 return [];
             }
@@ -139,7 +145,7 @@ class PropelFacadeFactory
             /**
              * @return string
              */
-            public function getSchemaDirectory()
+            public function getSchemaDirectory(): string
             {
                 return SprykerConstants::PROPEL_SCHEMA_DIRECTORY;
             }
@@ -152,7 +158,7 @@ class PropelFacadeFactory
     protected function createPropelToUtilTextServiceBridge(): PropelToUtilTextServiceInterface
     {
         return new PropelToUtilTextServiceBridge(
-            $this->createUtilTextService()
+            $this->createUtilTextService(),
         );
     }
 
@@ -168,7 +174,7 @@ class PropelFacadeFactory
     }
 
     /**
-     * @return \Spryker\Zed\Propel\Dependency\Plugin\PropelSchemaElementFilterPluginInterface[]
+     * @return array<\Spryker\Zed\Propel\Dependency\Plugin\PropelSchemaElementFilterPluginInterface>
      */
     protected function createPropelSchemaElementFilterPlugins(): array
     {

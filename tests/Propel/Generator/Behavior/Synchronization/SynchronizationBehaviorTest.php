@@ -29,7 +29,7 @@ class SynchronizationBehaviorTest extends Unit
     {
         static::assertInstanceOf(
             SynchronizationBehaviorConfig::class,
-            $this->synchronizationBehavior->getConfig()
+            $this->synchronizationBehavior->getConfig(),
         );
     }
 }

@@ -36,5 +36,10 @@
       "FondOfCodeception\\": "tests/FondOfCodeception",
       "Propel\\Generator\\Behavior\\Synchronization\\": "tests/Propel/Generator/Behavior/Synchronization"
     }
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
   }
 }

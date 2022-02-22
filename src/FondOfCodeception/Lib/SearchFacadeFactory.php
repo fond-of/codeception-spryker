@@ -86,7 +86,7 @@ class SearchFacadeFactory
                         $this->getUtilEncodingService(),
                         [
                             SprykerConstants::STORE,
-                        ]
+                        ],
                     );
                 }
             };
@@ -167,7 +167,7 @@ class SearchFacadeFactory
             }
 
             /**
-             * @return \Generated\Shared\Transfer\StoreTransfer[]
+             * @return array<\Generated\Shared\Transfer\StoreTransfer>
              */
             public function getAllStores()
             {
@@ -181,7 +181,7 @@ class SearchFacadeFactory
     }
 
     /**
-     * @return \Spryker\Zed\SearchExtension\Dependency\Plugin\InstallPluginInterface[]
+     * @return array<\Spryker\Zed\SearchExtension\Dependency\Plugin\InstallPluginInterface>
      */
     protected function createSearchMapInstallerPlugins(): array
     {
@@ -262,12 +262,12 @@ class SearchFacadeFactory
 
         return new class ($this->config[SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS]) extends SharedSearchElasticsearchConfig {
             /**
-             * @var string[]
+             * @var array<string>
              */
             protected $supportedSourceIdentifiers;
 
             /**
-             * @param string[] $supportedSourceIdentifiers
+             * @param array<string> $supportedSourceIdentifiers
              */
             public function __construct(array $supportedSourceIdentifiers)
             {
@@ -275,7 +275,7 @@ class SearchFacadeFactory
             }
 
             /**
-             * @return string[]
+             * @return array<string>
              */
             public function getSupportedSourceIdentifiers(): array
             {
@@ -310,13 +310,13 @@ class SearchFacadeFactory
 
         $container->set(
             SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING,
-            $this->{$createUtilEncodingMethod}()
+            $this->{$createUtilEncodingMethod}(),
         );
 
         if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::CLIENT_STORE')) {
             $container->set(
                 SearchElasticsearchDependencyProvider::CLIENT_STORE,
-                $this->createSearchElasticsearchToStoreClientBridge()
+                $this->createSearchElasticsearchToStoreClientBridge(),
             );
         }
 
@@ -331,7 +331,7 @@ class SearchFacadeFactory
         $utilEncodingServiceFactory = new UtilEncodingServiceFactory();
 
         return new SharedSearchElasticsearchToUtilEncodingServiceBridge(
-            $this->createUtilEncodingService()
+            $this->createUtilEncodingService(),
         );
     }
 
@@ -343,7 +343,7 @@ class SearchFacadeFactory
         $utilEncodingServiceFactory = new UtilEncodingServiceFactory();
 
         return new ZedSearchElasticsearchToUtilEncodingServiceBridge(
-            $this->createUtilEncodingService()
+            $this->createUtilEncodingService(),
         );
     }
 
@@ -367,7 +367,7 @@ class SearchFacadeFactory
             ->setFactory($this->createStoreFactory());
 
         return new SearchElasticsearchToStoreClientBridge(
-            $storeClient
+            $storeClient,
         );
     }
 
@@ -397,8 +397,7 @@ class SearchFacadeFactory
             }
         };
 
-        $storeFactory = new class ($storeReader) extends StoreFactory {
-
+        return new class ($storeReader) extends StoreFactory {
             /**
              * @var \Spryker\Shared\Store\Reader\StoreReaderInterface
              */
@@ -420,7 +419,5 @@ class SearchFacadeFactory
                 return $this->storeReader;
             }
         };
-
-        return $storeFactory;
     }
 }

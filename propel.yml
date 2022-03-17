@@ -22,4 +22,4 @@ propel:
       - zed
     objectModel:
       builders:
-        query: \Spryker\Zed\PropelOrm\Business\Builder\QueryBuilder
+        query: \FondOfCodeception\Builder\QueryBuilder

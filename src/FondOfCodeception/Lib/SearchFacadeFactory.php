@@ -225,6 +225,13 @@ class SearchFacadeFactory
     protected function createSearchElasticsearchConfig(): SearchElasticsearchConfig
     {
         $searchElasticsearchConfig = new class extends SearchElasticsearchConfig {
+            /** @var array */
+            protected const POSSIBLE_DIRECTORY_PATTERNS = [
+                '%s/vendor/*/*/src/*/Shared/*/Schema/',
+                '%s/*/*/src/*/Shared/*/Schema/',
+                '%s/src/*/Shared/*/Schema/',
+            ];
+
             /**
              * @return array
              */
@@ -232,14 +239,11 @@ class SearchFacadeFactory
             {
                 $directories = [];
 
-                $directory = sprintf('%s/vendor/*/*/src/*/Shared/*/Schema/', APPLICATION_ROOT_DIR);
-                if (glob($directory, GLOB_NOSORT | GLOB_ONLYDIR)) {
-                    $directories[] = $directory;
-                }
-
-                $directory = sprintf('%s/*/*/src/*/Shared/*/Schema/', APPLICATION_ROOT_DIR);
-                if (glob($directory, GLOB_NOSORT | GLOB_ONLYDIR)) {
-                    $directories[] = $directory;
+                foreach (static::POSSIBLE_DIRECTORY_PATTERNS as $possibleDirectoryPattern) {
+                    $directory = sprintf($possibleDirectoryPattern, APPLICATION_ROOT_DIR);
+                    if (glob($directory, GLOB_NOSORT | GLOB_ONLYDIR)) {
+                        $directories[] = $directory;
+                    }
                 }
 
                 return $directories;

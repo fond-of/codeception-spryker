@@ -36,6 +36,22 @@ class QueryBuilder extends BaseQueryBuilder
             {
                 return [];
             }
+
+            /**
+             * @return array<\Spryker\Zed\PropelOrmExtension\Dependency\Plugin\PostUpdateExtensionPluginInterface>
+             */
+            public function getPostUpdateExtensionPlugins(): array
+            {
+                return [];
+            }
+
+            /**
+             * @return array<\Spryker\Zed\PropelOrmExtension\Dependency\Plugin\PostDeleteExtensionPluginInterface>
+             */
+            public function getPostDeleteExtensionPlugins(): array
+            {
+                return [];
+            }
         };
     }
 }

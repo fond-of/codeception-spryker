@@ -19,7 +19,7 @@ class Spryker extends Module
     /**
      * @var array
      */
-    protected array $config = [
+    protected $config = [
         SprykerConstants::CONFIG_GENERATE_TRANSFER => true,
         SprykerConstants::CONFIG_GENERATE_MAP_CLASSES => true,
         SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES => true,

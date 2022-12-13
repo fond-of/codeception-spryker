@@ -4,6 +4,7 @@ namespace FondOfCodeception\Module;
 
 use Codeception\Lib\ModuleContainer;
 use Codeception\Test\Unit;
+use PHPUnit\Framework\MockObject\MockObject;
 use Spryker\Shared\Config\Environment;
 
 class SprykerTest extends Unit
@@ -11,12 +12,12 @@ class SprykerTest extends Unit
     /**
      * @var \FondOfCodeception\Module\Spryker
      */
-    protected $spryker;
+    protected Spryker $spryker;
 
     /**
      * @var \Codeception\Lib\ModuleContainer|\PHPUnit\Framework\MockObject\MockObject
      */
-    protected $moduleContainerMock;
+    protected MockObject|ModuleContainer $moduleContainerMock;
 
     /**
      * @return void

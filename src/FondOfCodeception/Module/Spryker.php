@@ -19,7 +19,7 @@ class Spryker extends Module
     /**
      * @var array
      */
-    protected $config = [
+    protected array $config = [
         SprykerConstants::CONFIG_GENERATE_TRANSFER => true,
         SprykerConstants::CONFIG_GENERATE_MAP_CLASSES => true,
         SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES => true,
@@ -29,27 +29,27 @@ class Spryker extends Module
     /**
      * @var \FondOfCodeception\Lib\NullLoggerFactory
      */
-    protected $nullLoggerFactory;
+    protected NullLoggerFactory $nullLoggerFactory;
 
     /**
      * @var \FondOfCodeception\Lib\SearchFacadeFactory
      */
-    protected $searchFacadeFactory;
+    protected SearchFacadeFactory $searchFacadeFactory;
 
     /**
      * @var \FondOfCodeception\Lib\TransferFacadeFactory
      */
-    protected $transferFacadeFactory;
+    protected TransferFacadeFactory $transferFacadeFactory;
 
     /**
      * @var \FondOfCodeception\Lib\PropelFacadeFactory
      */
-    protected $propelFacadeFactory;
+    protected PropelFacadeFactory $propelFacadeFactory;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface|null
      */
-    protected $nullLogger;
+    protected ?LoggerInterface $nullLogger = null;
 
     /**
      * @param \Codeception\Lib\ModuleContainer $moduleContainer

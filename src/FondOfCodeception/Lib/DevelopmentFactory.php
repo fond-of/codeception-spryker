@@ -11,6 +11,7 @@ use Spryker\Zed\Development\DevelopmentDependencyProvider;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
 use Spryker\Zed\Kernel\Container;
 use Symfony\Component\Finder\Finder;
+use Throwable;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -30,7 +31,7 @@ class DevelopmentFactory
     }
 
     /**
-     * @return \Spryker\Zed\Transfer\Business\TransferFacadeInterface
+     * @return \Spryker\Zed\Development\Business\DevelopmentFacadeInterface
      */
     public function create(): DevelopmentFacadeInterface
     {
@@ -147,7 +148,7 @@ class DevelopmentFactory
             /**
              * @var array<string>
              */
-            protected $ideAutoCompletionSourceDirectories;
+            protected array $ideAutoCompletionSourceDirectories;
 
             /**
              * @param array<string> $ideAutoCompletionSourceDirectories
@@ -162,10 +163,16 @@ class DevelopmentFactory
              */
             public function getIdeAutoCompletionSourceDirectoryGlobPatterns(): array
             {
-                return [
-                    APPLICATION_VENDOR_DIR . '/*/*/src/' => '*/*/',
-                    ...$this->ideAutoCompletionSourceDirectories,
-                ];
+                try {
+                    $ideAutoCompletionSourceDirectories = parent::getIdeAutoCompletionSourceDirectoryGlobPatterns();
+                } catch (Throwable $e) {
+                    $ideAutoCompletionSourceDirectories = [APPLICATION_VENDOR_DIR . '/*/*/src/' => '*/*/'];
+                }
+
+                return array_merge(
+                    $ideAutoCompletionSourceDirectories,
+                    $this->ideAutoCompletionSourceDirectories,
+                );
             }
         };
     }

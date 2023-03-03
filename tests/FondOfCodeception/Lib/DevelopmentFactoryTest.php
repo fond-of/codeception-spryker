@@ -18,6 +18,8 @@ class DevelopmentFactoryTest extends Unit
      */
     protected function _before(): void
     {
+        defined('APPLICATION_ROOT_DIR') || define('APPLICATION_ROOT_DIR', getcwd());
+
         $this->developmentFactory = new DevelopmentFactory([
             SprykerConstants::CONFIG_IDE_AUTO_COMPLETION_SOURCE_DIRECTORIES => [],
         ]);

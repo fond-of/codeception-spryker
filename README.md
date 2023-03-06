@@ -24,7 +24,9 @@ This module allows developers to test spryker modules isolated.
             generate_transfer: true|false # Default is true
             generate_map_classes: true|false # Default is true
             generate_propel_classes: true|false # Default is true
+            generate_ide_auto_completion: true|false # Default is true
             supported_source_identifiers: [string] # Default is ['page']
+            ide_auto_completion_source_directories: [string => string] # Default is empty but it got merged with Spryker default paths
     ...
     ```
 
@@ -33,6 +35,7 @@ This module allows developers to test spryker modules isolated.
 * Generate (entity)transfer classes
 * Generate propel classes
 * Generate map classes
+* Generate ide auto completion
 * Initialize environment (constants like APPLICATION_ROOT_DIR will be created)
 
 ## Contributing

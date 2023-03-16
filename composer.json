@@ -16,7 +16,8 @@
     "spryker/search": "^8.0.0",
     "spryker/search-elasticsearch": "^1.0.0",
     "spryker/synchronization-behavior": "^1.0.0",
-    "spryker/transfer": "^3.1.1"
+    "spryker/transfer": "^3.1.1",
+    "spryker/development": "^3.34"
   },
   "require-dev": {
     "spryker/code-sniffer": "*"

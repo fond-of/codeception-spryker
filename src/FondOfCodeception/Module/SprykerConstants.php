@@ -43,4 +43,14 @@ interface SprykerConstants
      * @var string
      */
     public const CONFIG_SUPPORTED_SOURCE_IDENTIFIERS = 'supported_source_identifiers';
+
+    /**
+     * @var string
+     */
+    public const CONFIG_GENERATE_IDE_AUTO_COMPLETION = 'generate_ide_auto_completion';
+
+    /**
+     * @var string
+     */
+    public const CONFIG_IDE_AUTO_COMPLETION_SOURCE_DIRECTORIES = 'ide_auto_completion_source_directories';
 }

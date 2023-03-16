@@ -6,6 +6,7 @@ use Codeception\Configuration;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
 use Exception;
+use FondOfCodeception\Lib\DevelopmentFactory;
 use FondOfCodeception\Lib\NullLoggerFactory;
 use FondOfCodeception\Lib\PropelFacadeFactory;
 use FondOfCodeception\Lib\SearchFacadeFactory;
@@ -23,7 +24,9 @@ class Spryker extends Module
         SprykerConstants::CONFIG_GENERATE_TRANSFER => true,
         SprykerConstants::CONFIG_GENERATE_MAP_CLASSES => true,
         SprykerConstants::CONFIG_GENERATE_PROPEL_CLASSES => true,
+        SprykerConstants::CONFIG_GENERATE_IDE_AUTO_COMPLETION => true,
         SprykerConstants::CONFIG_SUPPORTED_SOURCE_IDENTIFIERS => ['page'],
+        SprykerConstants::CONFIG_IDE_AUTO_COMPLETION_SOURCE_DIRECTORIES => [],
     ];
 
     /**
@@ -52,6 +55,11 @@ class Spryker extends Module
     protected ?LoggerInterface $nullLogger = null;
 
     /**
+     * @var \FondOfCodeception\Lib\DevelopmentFactory
+     */
+    protected DevelopmentFactory $developmentFacadeFactory;
+
+    /**
      * @param \Codeception\Lib\ModuleContainer $moduleContainer
      * @param array|null $config
      */
@@ -63,6 +71,7 @@ class Spryker extends Module
         $this->searchFacadeFactory = new SearchFacadeFactory($this->config);
         $this->propelFacadeFactory = new PropelFacadeFactory();
         $this->transferFacadeFactory = new TransferFacadeFactory();
+        $this->developmentFacadeFactory = new DevelopmentFactory($this->config);
     }
 
     /**
@@ -84,6 +93,10 @@ class Spryker extends Module
 
         if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_MAP_CLASSES]) {
             $this->generateMapClasses();
+        }
+
+        if ((bool)$this->config[SprykerConstants::CONFIG_GENERATE_IDE_AUTO_COMPLETION]) {
+            $this->generateIdeAutocompletion();
         }
     }
 
@@ -167,6 +180,21 @@ class Spryker extends Module
         } else {
             $searchFacade->generateSourceMap($nullLogger);
         }
+    }
+
+    /**
+     * @return void
+     */
+    protected function generateIdeAutocompletion(): void
+    {
+        $developmentFacade = $this->developmentFacadeFactory->create();
+
+        $developmentFacade->generateClientIdeAutoCompletion();
+        $developmentFacade->generateGlueIdeAutoCompletion();
+        $developmentFacade->generateServiceIdeAutoCompletion();
+        $developmentFacade->generateYvesIdeAutoCompletion();
+        $developmentFacade->generateZedIdeAutoCompletion();
+        $developmentFacade->generateGlueBackendIdeAutoCompletion();
     }
 
     /**

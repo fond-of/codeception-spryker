@@ -12,27 +12,31 @@ This module allows developers to test spryker modules isolated.
     composer require --dev fond-of-codeception/spryker
     ```
 
-2. Enable module in `codeception.yml`:
-    ``` yml
-    ...
-    modules:
-      enabled:
-        - ...
-        - \FondOfCodeception\Module\Spryker
-      config:
-        \FondOfCodeception\Module\Spryker:
-            generate_transfer: true|false # Default is true
-            generate_map_classes: true|false # Default is true
-            generate_propel_classes: true|false # Default is true
-            supported_source_identifiers: [string] # Default is ['page']
-    ...
-    ```
+   2. Enable module in `codeception.yml`:
+       ``` yml
+       ...
+       modules:
+         enabled:
+           - ...
+           - \FondOfCodeception\Module\Spryker
+         config:
+           \FondOfCodeception\Module\Spryker:
+               generate_transfer: true|false # Default is true
+               generate_map_classes: true|false # Default is true
+               generate_propel_classes: true|false # Default is true
+               generate_ide_auto_completion: true|false # Default is true
+               supported_source_identifiers: [string] # Default is ['page']
+               ide_auto_completion_source_directories: [string => string] # Default is empty but it got merged with Spryker default paths
+                    './bundles/*/src/': '*/*/' # Example value with wildcard
+       ...
+       ```
 
 ## Features
 
 * Generate (entity)transfer classes
 * Generate propel classes
 * Generate map classes
+* Generate ide auto completion
 * Initialize environment (constants like APPLICATION_ROOT_DIR will be created)
 
 ## Contributing

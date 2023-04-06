@@ -32,6 +32,8 @@ use Spryker\Zed\Search\SearchDependencyProvider;
 use Spryker\Zed\SearchElasticsearch\Business\SearchElasticsearchBusinessFactory;
 use Spryker\Zed\SearchElasticsearch\Business\SearchElasticsearchFacade;
 use Spryker\Zed\SearchElasticsearch\Communication\Plugin\Search\ElasticsearchIndexMapInstallerPlugin;
+use Spryker\Zed\SearchElasticsearch\Dependency\Facade\SearchElasticsearchToStoreFacadeBridge;
+use Spryker\Zed\SearchElasticsearch\Dependency\Facade\SearchElasticsearchToStoreFacadeInterface;
 use Spryker\Zed\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceBridge as ZedSearchElasticsearchToUtilEncodingServiceBridge;
 use Spryker\Zed\SearchElasticsearch\Dependency\Service\SearchElasticsearchToUtilEncodingServiceInterface as ZedSearchElasticsearchToUtilEncodingServiceInterface;
 use Spryker\Zed\SearchElasticsearch\SearchElasticsearchConfig;
@@ -120,6 +122,10 @@ class SearchFacadeFactory
                 $container[SearchDependencyProvider::FACADE_STORE] = $this->createSearchToStoreFacadeBridge();
             }
 
+            if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::FACADE_STORE')) {
+                $container[SearchElasticsearchDependencyProvider::FACADE_STORE] = $this->createSearchElasticsearchToStoreFacadeBridge();
+            }
+
             if (defined('\Spryker\Zed\Search\SearchDependencyProvider::PLUGINS_SEARCH_MAP_INSTALLER')) {
                 $container[SearchDependencyProvider::PLUGINS_SEARCH_MAP_INSTALLER] = $this->createSearchMapInstallerPlugins();
             }
@@ -131,6 +137,10 @@ class SearchFacadeFactory
 
         if (defined('\Spryker\Zed\Search\SearchDependencyProvider::FACADE_STORE')) {
             $container->set(SearchDependencyProvider::FACADE_STORE, $this->createSearchToStoreFacadeBridge());
+        }
+
+        if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::FACADE_STORE')) {
+            $container->set(SearchElasticsearchDependencyProvider::FACADE_STORE, $this->createSearchElasticsearchToStoreFacadeBridge());
         }
 
         if (defined('\Spryker\Zed\Search\SearchDependencyProvider::PLUGINS_SEARCH_MAP_INSTALLER')) {
@@ -161,7 +171,7 @@ class SearchFacadeFactory
             /**
              * @return \Generated\Shared\Transfer\StoreTransfer
              */
-            public function getCurrentStore()
+            public function getCurrentStore(bool $fallbackToDefault = false)
             {
                 return (new StoreTransfer())->setName(SprykerConstants::STORE);
             }
@@ -178,6 +188,42 @@ class SearchFacadeFactory
         };
 
         return new SearchToStoreFacadeBridge($storeFacade);
+    }
+
+    /**
+     * @return SearchElasticsearchToStoreFacadeInterface
+     */
+    protected function createSearchElasticsearchToStoreFacadeBridge(): SearchElasticsearchToStoreFacadeInterface
+    {
+        $storeFacade = new class extends StoreFacade {
+            /**
+             * @return \Generated\Shared\Transfer\StoreTransfer
+             */
+            public function getCurrentStore(bool $fallbackToDefault = false)
+            {
+                return (new StoreTransfer())->setName(SprykerConstants::STORE);
+            }
+
+            /**
+             * @return array<\Generated\Shared\Transfer\StoreTransfer>
+             */
+            public function getAllStores()
+            {
+                return [
+                    $this->getCurrentStore(),
+                ];
+            }
+
+            /**
+             * @return bool
+             */
+            public function isDynamicStoreEnabled(): bool
+            {
+                return true;
+            }
+        };
+
+        return new SearchElasticsearchToStoreFacadeBridge($storeFacade);
     }
 
     /**
@@ -307,6 +353,10 @@ class SearchFacadeFactory
                 $container[SearchElasticsearchDependencyProvider::CLIENT_STORE] = $this->createSearchElasticsearchToStoreClientBridge();
             }
 
+            if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::FACADE_STORE')) {
+                $container[SearchElasticsearchDependencyProvider::FACADE_STORE] = $this->createSearchElasticsearchToStoreFacadeBridge();
+            }
+
             $container[SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING] = $this->{$createUtilEncodingMethod}();
 
             return $container;
@@ -316,6 +366,10 @@ class SearchFacadeFactory
             SearchElasticsearchDependencyProvider::SERVICE_UTIL_ENCODING,
             $this->{$createUtilEncodingMethod}(),
         );
+
+        if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::FACADE_STORE')) {
+            $container->set(SearchElasticsearchDependencyProvider::FACADE_STORE, $this->createSearchElasticsearchToStoreFacadeBridge());
+        }
 
         if (defined('\Spryker\Zed\SearchElasticsearch\SearchElasticsearchDependencyProvider::CLIENT_STORE')) {
             $container->set(

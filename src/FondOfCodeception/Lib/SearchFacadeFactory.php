@@ -169,6 +169,8 @@ class SearchFacadeFactory
     {
         $storeFacade = new class extends StoreFacade {
             /**
+             * @param bool $fallbackToDefault
+             *
              * @return \Generated\Shared\Transfer\StoreTransfer
              */
             public function getCurrentStore(bool $fallbackToDefault = false)
@@ -191,12 +193,14 @@ class SearchFacadeFactory
     }
 
     /**
-     * @return SearchElasticsearchToStoreFacadeInterface
+     * @return \Spryker\Zed\SearchElasticsearch\Dependency\Facade\SearchElasticsearchToStoreFacadeInterface
      */
     protected function createSearchElasticsearchToStoreFacadeBridge(): SearchElasticsearchToStoreFacadeInterface
     {
         $storeFacade = new class extends StoreFacade {
             /**
+             * @param bool $fallbackToDefault
+             *
              * @return \Generated\Shared\Transfer\StoreTransfer
              */
             public function getCurrentStore(bool $fallbackToDefault = false)

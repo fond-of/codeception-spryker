@@ -8,7 +8,11 @@ use Spryker\Zed\PropelOrm\PropelOrmConfig;
 
 class QueryBuilder extends BaseQueryBuilder
 {
-    public function getConfig() {
+    /**
+     * @return \Spryker\Zed\Kernel\AbstractBundleConfig
+     */
+    public function getConfig()
+    {
         if (
             !class_exists('Spryker\Zed\PropelOrm\PropelOrmConfig')
         ) {

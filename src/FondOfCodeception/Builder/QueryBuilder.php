@@ -4,9 +4,28 @@ namespace FondOfCodeception\Builder;
 
 use Spryker\Zed\PropelOrm\Business\Builder\QueryBuilder as BaseQueryBuilder;
 use Spryker\Zed\PropelOrm\Business\PropelOrmBusinessFactory;
+use Spryker\Zed\PropelOrm\PropelOrmConfig;
 
 class QueryBuilder extends BaseQueryBuilder
 {
+    public function getConfig() {
+        if (
+            !class_exists('Spryker\Zed\PropelOrm\PropelOrmConfig')
+        ) {
+            return parent::getConfig();
+        }
+
+        return new class extends PropelOrmConfig {
+            /**
+             * @return bool
+             */
+            public function isBooleanCastingEnabled(): bool
+            {
+                return false;
+            }
+        };
+    }
+
     /**
      * @return \Spryker\Zed\Kernel\Business\BusinessFactoryInterface
      */

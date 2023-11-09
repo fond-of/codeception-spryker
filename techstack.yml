@@ -1,0 +1,50 @@
+repo_name: spryker-community/codeception-spryker
+report_id: ba1f63889503941d9d24040e73a293a7
+repo_type: Public
+timestamp: '2023-11-09T17:23:07+00:00'
+requested_by: daniel-rose
+provider: github
+branch: master
+detected_tools_count: 4
+tools:
+- name: PHP
+  description: A popular general-purpose scripting language that is especially suited
+    to web development
+  website_url: http://www.php.net/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/991/hwUcGZ41_400x400.jpg
+  detection_source: Repo Metadata
+- name: Codeception
+  description: Elegant and Efficient Testing for PHP
+  website_url: http://codeception.com/
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Testing Frameworks
+  image_url: https://img.stackshare.io/service/2301/fQkiPzLo_400x400.jpg
+  detection_source: composer.json
+  last_updated_by: Daniel Rose
+  last_updated_on: 2022-12-13 15:20:33.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source: ".github/workflows/main.yml"
+  last_updated_by: Daniel Rose
+  last_updated_on: 2022-12-13 15:20:33.000000000 Z

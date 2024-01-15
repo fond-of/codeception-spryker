@@ -8,11 +8,14 @@ use Codeception\Module;
 use Exception;
 use FondOfCodeception\Lib\DevelopmentFactory;
 use FondOfCodeception\Lib\NullLoggerFactory;
+use FondOfCodeception\Lib\PropelApplicationFactory;
 use FondOfCodeception\Lib\PropelFacadeFactory;
 use FondOfCodeception\Lib\SearchFacadeFactory;
 use FondOfCodeception\Lib\TransferFacadeFactory;
 use Psr\Log\LoggerInterface;
 use Spryker\Shared\Config\Environment;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Process\Process;
 
 class Spryker extends Module
@@ -50,6 +53,11 @@ class Spryker extends Module
     protected PropelFacadeFactory $propelFacadeFactory;
 
     /**
+     * @var \FondOfCodeception\Lib\PropelApplicationFactory
+     */
+    protected PropelApplicationFactory $propelApplicationFactory;
+
+    /**
      * @var \Psr\Log\LoggerInterface|null
      */
     protected ?LoggerInterface $nullLogger = null;
@@ -70,6 +78,7 @@ class Spryker extends Module
         $this->nullLoggerFactory = new NullLoggerFactory();
         $this->searchFacadeFactory = new SearchFacadeFactory($this->config);
         $this->propelFacadeFactory = new PropelFacadeFactory();
+        $this->propelApplicationFactory = new PropelApplicationFactory();
         $this->transferFacadeFactory = new TransferFacadeFactory();
         $this->developmentFacadeFactory = new DevelopmentFactory($this->config);
     }
@@ -106,6 +115,7 @@ class Spryker extends Module
     protected function generatePropelClasses(): void
     {
         $propelFacade = $this->propelFacadeFactory->create();
+        $propelApplication = $this->propelApplicationFactory->create();
 
         $this->debug('Deleting existing schema files...');
         $propelFacade->cleanPropelSchemaDirectory();
@@ -119,14 +129,22 @@ class Spryker extends Module
             $configFile = APPLICATION_ROOT_DIR . '/propel.yml';
         }
 
-        $modelBuildCommand = [APPLICATION_VENDOR_DIR . '/bin/propel', 'model:build', '--config-dir', $configFile];
-        $loaderScriptDirParams = ['--loader-script-dir', SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY];
-
         $this->debug('Generating propel classes...');
         try {
-            (new Process(array_merge($modelBuildCommand, $loaderScriptDirParams)))->mustRun();
+            $input = new ArrayInput([
+                'command' => 'model:build',
+                '--config-dir' => $configFile,
+                '--loader-script-dir' => SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY
+            ]);
+
+            $propelApplication->run($input, new NullOutput());
         } catch (Exception $exception) {
-            (new Process($modelBuildCommand))->mustRun();
+            $input = new ArrayInput([
+                'command' => 'model:build',
+                '--config-dir' => $configFile
+            ]);
+
+            $propelApplication->run($input, new NullOutput());
         }
 
         if (!file_exists(SprykerConstants::PROPEL_LOADER_SCRIPT)) {

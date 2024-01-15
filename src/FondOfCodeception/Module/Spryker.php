@@ -16,7 +16,6 @@ use Psr\Log\LoggerInterface;
 use Spryker\Shared\Config\Environment;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Process\Process;
 
 class Spryker extends Module
 {
@@ -134,14 +133,14 @@ class Spryker extends Module
             $input = new ArrayInput([
                 'command' => 'model:build',
                 '--config-dir' => $configFile,
-                '--loader-script-dir' => SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY
+                '--loader-script-dir' => SprykerConstants::PROPEL_LOADER_SCRIPT_DIRECTORY,
             ]);
 
             $propelApplication->run($input, new NullOutput());
         } catch (Exception $exception) {
             $input = new ArrayInput([
                 'command' => 'model:build',
-                '--config-dir' => $configFile
+                '--config-dir' => $configFile,
             ]);
 
             $propelApplication->run($input, new NullOutput());

@@ -237,6 +237,7 @@ class Spryker extends Module
         defined('APPLICATION_ROOT_DIR') || define('APPLICATION_ROOT_DIR', $this->getPathToRootDirectory());
         defined('APPLICATION_VENDOR_DIR') || define('APPLICATION_VENDOR_DIR', APPLICATION_ROOT_DIR . '/vendor');
         defined('APPLICATION_SOURCE_DIR') || define('APPLICATION_SOURCE_DIR', APPLICATION_ROOT_DIR . '/src');
+        defined('APPLICATION_CODE_BUCKET') || define('APPLICATION_CODE_BUCKET', '');
     }
 
     /**
